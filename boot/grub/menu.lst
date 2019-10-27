@@ -1,0 +1,26 @@
+# Begin /boot/grub/menu.lst
+
+#gfxmenu ({rootdisk},0)/boot/grub/message.arch
+hiddenmenu
+
+# By default boot the first menu entry.
+#default 0
+default saved
+fallback 1
+
+# Allow 30 seconds before booting the default.
+timeout 0
+
+# Use prettier colors.
+color green/black light-green/black
+
+title Windows
+rootnoverify (hd0,1)
+chainloader +1
+savedefault fallback
+
+title mini
+root (hd0,0)
+kernel /boot/kernel init=/linuxrc reboot=w lpj=8245865 vga=771 root=/dev/ram0 rw rdinit=/linuxrc loglevel=0
+initrd /boot/init.cpio.gz
+savedefault 
