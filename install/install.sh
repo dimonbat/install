@@ -14,30 +14,33 @@ then
     exit
 fi
 
+echo "partition to install ${partition}. WARNING!!! All data will be lost!!!"
+
 umount /mnt/lin
 umount /mnt/hd
 umount ${partition}1
 
+
 #make label (its need for setup partition)
-echo "make label"
+echo "make label on ${partition}"
 parted -s ${partition} mklabel msdos
 
 #Setup partition
-parted -s ${partition} mkpart p ext3 1 200M
+parted -s ${partition} mkpart p ext3 0 200M
 mdev -s
 mkfs.ext2 ${partition}1
 tune2fs -c 0 -i 0 ${partition}1
 parted -s ${partition} set 1 boot on
 
 #Setup filesystem
-busybox mount ${partition}1 /mnt/lin
+mount ${partition}1 /mnt/lin
 tar --directory=/mnt/lin -xf rootfs.tar
 cp -R boot /mnt/lin/
 UPDATED=0
 ping -q -c 1 ${UPDATESERVER} > /dev/null
 if [ "$?" -eq "0" ]
 then
-lftp <<ZZZ
+    lftp <<ZZZ
 open ftp://${UPDATEADDRESS}
 get init.cpio.gz -o /mnt/lin/boot/init1.cpio.gz
 get kernel -o /mnt/lin/boot/kernel1
@@ -90,7 +93,7 @@ fi
 if [ "${UPDATED}" -eq "0" ]
 then
     CD=`grep "drive name:" /proc/sys/dev/cdrom/info | cut -f 3`
-    busybox mount /dev/${CD} /mnt/cdrom
+    mount /dev/${CD} /mnt/cdrom
     cp -R /mnt/cdrom/install/boot/* /mnt/lin/boot/
     if [ "$?" -eq "0" ]
     then
@@ -126,6 +129,31 @@ cat boot/grub/menu.lst | sed -e "s/{rootdev}/$ROOTD/g" | sed -e "s/{rootdisk}/$i
 #umount /mnt/hd
 mdev -s
 info_read
+
+#internal image storage
+echo -n "Internal storage size (Press Enter if you will not use internal storage): "
+read INTERNALSTORAGE
+if [ "${INTERNALSTORAGE}X" != "X" ]
+then
+    #Setup partition2 (internal storage)
+    parted -s ${partition} mkpart p ext3 200 ${INTERNALSTORAGE}
+    mdev -s
+    mkfs.ext2 ${partition}2
+    tune2fs -c 0 -i 0 ${partition}2
+    
+    # Set partition 2 partition type    
+    grub --no-floppy --batch <<EOF >$log_file
+parttype ($installdrive,1) 0xbc
+quit
+EOF
+    
+else
+    INTERNALSTORAGE=0
+fi
+
+#save settings
+info_save
+
 ### ASK REBOOT
 ANSW="n"
 echo "All done."
