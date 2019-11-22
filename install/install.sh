@@ -146,10 +146,66 @@ then
 parttype ($installdrive,1) 0xbc
 quit
 EOF
-    
+    WORKDEVICE="/dev/sda3"
 else
     INTERNALSTORAGE=0
+    WORKDEVICE="/dev/sda2"
 fi
+
+
+# hostname
+echo -n "hostname (PRORST): "
+read HOSTNAME
+if [ "${HOSTNAME}X" == "X" ]
+then
+    HOSTNAME="PRORST"
+fi
+
+
+# FTP server
+echo -n "FTP server (ip or hostname)[press enter if no FPT server]: "
+read FTPSERVER
+
+FTPUSERNAME=""
+FTPPASSWORD=""
+if [ "${FTPSERVER}X" != "X" ]
+then
+    echo -n "FTP server username: "
+    read FTPUSERNAME
+    
+    echo -n "FTP server password: " 
+    read FTPPASSWORD
+fi
+
+
+# CIFS server
+echo -n "CIFS server (ip or hostname)[press enter if no CIFS server]: "
+read CIFSSERVER
+
+CIFSUSERNAME=""
+CIFSPASSWORD=""
+CIFSSHARE=""
+if [ "${CIFSSERVER}X" != "X" ]
+then
+    echo -n "CIFS server share: "
+    read CIFSSHARE
+
+    echo -n "CIFS server username: "
+    read CIFSUSERNAME
+    
+    echo -n "CIFS server password: " 
+    read CIFSPASSWORD
+fi
+
+
+# HTTP server
+echo -n "HTTP server (ip or hostname): "
+read HTTPSERVER
+
+# Work Device
+
+
+
 
 #save settings
 info_save
