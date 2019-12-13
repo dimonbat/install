@@ -124,11 +124,11 @@ then
 	echo "INSTALLING linux..."
         cd /install
 	sh ./install.sh
-	elif [ `cat /proc/cmdline|grep -c "softinstall"` == "1" ]  ### install only soft. Partitions not deleted
+	elif [ `cat /proc/cmdline|grep -c "fixboot"` == "1" ]  ### install only soft. Partitions not deleted
         then
-	    echo "INSTALLING linux..."
+	    echo "Recover boot record..."
 	    cd /install
-	    sh ./softinstall.sh
+	    sh ./grubr.sh
 	fi
 
     fi
