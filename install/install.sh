@@ -78,7 +78,7 @@ fi
 
 
 # FTP server
-echo -n "FTP server (ip or hostname)[press enter if no FPT server]: "
+echo -n "FTP server (ip or hostname)[press enter if no FTP server]: "
 read FTPSERVER
 
 FTPUSERNAME=""

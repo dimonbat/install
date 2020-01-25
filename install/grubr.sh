@@ -5,15 +5,15 @@ root (hd0,0)
 setup (hd0)
 quit
 EOF
-### ASK REBOOT ##EXPERIMENTAL 2009-08-03
+### ASK REBOOT 
 ANSW="n"
 echo "All done."
 echo -n "Are you want to reboot now? (y/n): "
 read ANSW
 if [ $ANSW == "y" ]
 then
-echo "You choose REBOOT. proceed..."
-reboot
+    echo "You choose REBOOT. proceed..."
+    reboot
 else 
-echo "It's your choice...enjoy Linux"
+    echo "It's your choice...enjoy Linux"
 fi
